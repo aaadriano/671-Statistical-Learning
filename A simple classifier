@@ -1,6 +1,0 @@
-A simple classifier
-
-The Iris dataset is  available at https://en.wikipedia.org/wiki/Iris_flower_data_set. 
-We create a classifier for the labels \I. setosa" versus \I. versicolor" using 80% of the data. 
-Then, we compute the classification error using the 20% remaining. 
-Next, we repeat the same thing for the labels \I. virginica" versus \I. versicolor".

@@ -1,0 +1,119 @@
+---
+title: "A simple Classifier"
+author: "A. Adriano"
+date: "Statistical Learning"
+output: html_document
+---
+<style type="text/css">
+
+h1.title {
+  font-size: 42px;
+  color: DarkRed;
+  text-align: center;
+}
+h4.author { //
+    font-size: 25px;
+  font-family: "Times New Roman", Times, serif;
+  color: DarkRed;
+  text-align: center;
+}
+h4.date { //
+  font-size: 20px;
+  font-family: "Times New Roman", Times, serif;
+  color: DarkRed;
+  text-align: center;
+}
+</style>
+****
+### A Simple Classifier on Iris Data
+</br>
+
+First, I import the data.
+```{r echo=FALSE, message=FALSE, warning= FALSE}
+library(tidyverse)
+library(kableExtra)
+iris <- as_tibble(read_csv('iris.csv'))
+```
+
+
+```{r}
+(glimpse(iris))
+```
+</br>
+Next, I need to partition the data into the test and training set (80% & 20%, respectively).
+
+```{r message=FALSE, warning= FALSE}
+# Partition the data
+#install.packages("caret")
+library(caret)
+partition <- createDataPartition(iris$species, p=0.80, list=FALSE)
+# 80% to train, 20% to test
+test <- iris[-partition,]
+train <- iris[partition,]
+```
+
+I plot the data to get a general idea of the characteristics and the distribution:
+```{r}
+iris %>%
+  ggplot(aes(sepal_length, sepal_width, color=species, shape=species)) +
+    geom_point ()+
+    xlab("Petal Length") +
+    ylab("Petal Width") +
+    ggtitle("Petal Length-Width")
+```
+
+Next, I prepare my algorithm for the control and fit a simple linear classifier onto the training data.
+```{r}
+library(pander)
+control <- trainControl(method="cv", number=10)
+metric <- "Accuracy"
+#Using a simple linear algorithm:
+set.seed(7)
+fit.lda <- train(species~., data=train, method="lda", metric=metric, trControl=control)
+#See the outcomes
+pander(print(fit.lda))
+```
+
+The next step is to estimate the model onto the remaining test set. This is the outcome for recognizing all 3 flower types simultaneously: "I. Setosa"" versus "I. Versicolor"" versus "I. Virginica".
+Predictions:
+```{r}
+# estimate skill of LDA on the test set
+skill <- predict(fit.lda, test)
+skill
+```
+Actual:
+```{r}
+test$species
+```
+```{r}
+#confusionMatrix(skill, test$species)
+```
+
+Confusion Matrix and Statistics
+Reference
+
+|Prediction | Setosa | Versicolor | Virginica |
+| ------------- |:-------------:| -----:| -----:|
+| Setosa      | 10 | 0 |  0 |
+| Versicolor    | 0     |   10 |  0 |
+| Virginicas | 0    |    0 | 10 |
+ 
+Overall Statistics
+                                     
+               Accuracy : 1          
+                 95% CI : (0.8843, 1)
+    No Information Rate : 0.3333     
+    P-Value [Acc > NIR] : 4.857e-15  
+                                     
+                  Kappa : 1          
+ 
+|Statistics by Class:| Class: setosa | Class: versicolor | Class: virginica |
+| ------------- |:-------------:| -----:| -----:|
+|Sensitivity            |     1.0000  |          1.0000 |          1.0000 |
+|Specificity              |   1.0000   |         1.0000  |         1.0000|
+|Pos Pred Value            |  1.0000    |        1.0000   |        1.0000|
+|Neg Pred Value             | 1.0000     |       1.0000    |       1.0000 |
+|Prevalence       |           0.3333      |      0.3333     |      0.3333|
+|Detection Rate    |          0.3333       |     0.3333      |     0.3333|
+|Detection Prevalence |       0.3333        |    0.3333       |    0.3333|
+|Balanced Accuracy     |      1.0000         |   1.0000        |   1.0000|

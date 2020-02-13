@@ -1,0 +1,99 @@
+---
+title: "Perceptron Problem"
+author: "A. Adriano"
+date: "Statistical Learning"
+output: html_document
+---
+<style type="text/css">
+
+h1.title {
+  font-size: 42px;
+  color: DarkRed;
+  text-align: center;
+}
+h4.author { //
+    font-size: 25px;
+  font-family: "Times New Roman", Times, serif;
+  color: DarkRed;
+  text-align: center;
+}
+h4.date { //
+  font-size: 20px;
+  font-family: "Times New Roman", Times, serif;
+  color: DarkRed;
+  text-align: center;
+}
+</style>
+****
+### Perceptron algorithm for the Iris Dataset
+</br>
+
+First, I import the data. I was asked to write code for two dimensions, so I chose length and width. I apply it to the iris data from Problem 1 as an example.
+```{r echo=FALSE, message=FALSE, warning= FALSE}
+library(tidyverse)
+library(kableExtra)
+iris <- as_tibble(read_csv('iris.csv'))
+```
+
+```{r}
+(glimpse(iris))
+```
+
+Next, the Perceptron will work better using binary data, so let Setosa = -1 and let all others by = 1.
+```{r}
+iris[, 4] <- 1
+iris[iris[, 3] == "setosa", 4] <- -1
+
+x <- iris[, c(1, 2)]
+y <- iris[, 4]
+
+# head and tail of data 
+head(x)
+head(y)
+```
+Next I need to write the algorithm that can take the data and number of iterations through the program and update the weights of the factors.
+```{r}
+perceptron <- function(x, y, eta, niter) {
+        #Start with a weight vector
+        weight <- rep(0, dim(x)[2] + 1)
+        errors <- rep(0, niter)
+        # create a loop off the training set
+        for (jj in 1:niter) {
+                for (ii in 1:length(y)) {
+                        #Make the prediciton
+                        z <- sum(weight[2:length(weight)] * 
+                                         as.numeric(x[ii, ])) + weight[1]
+                        if(z < 0) {
+                                ypred <- -1
+                        } else {
+                                ypred <- 1}
+                        # adjust the weight
+                        weight2 <- eta * (y[ii] - ypred) * 
+                                c(1, as.numeric(x[ii, ]))
+                        weight <- weight + weight2
+                        # adjust error
+                        if ((y[ii] - ypred) != 0.0) {
+                                errors[jj] <- errors[jj] + 1
+                        }}}
+# weight to decide between the two species 
+print(weight)
+return(errors)
+}
+```
+
+Next, we extend to all 3 types of flowers,
+```{r}
+iris2 <- iris[, c(1, 3, 5)]
+names(iris2) <- c("sepal", "petal", "species")
+```
+And print the error:
+```{r}
+x <- iris[, 1:4] 
+names(x) <- tolower(names(x))
+y <- rep(-1, dim(x)[1])
+y[iris[, 5] == "virginica"] <- 1
+
+
+err <- perceptron(x, y, 0.01, 50)
+```
+

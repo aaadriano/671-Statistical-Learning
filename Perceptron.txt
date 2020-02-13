@@ -1,0 +1,11 @@
+Consider a training set {(x_1, y_1),...,(x_n, y_n)}, with x_i in R^d and y_i in -1, 1. 
+The perceptron is one of the oldest algorithms in machine learning. 
+Historical notes are provide at https://en.wikipedia.org/wiki/Perceptron. 
+The perceptron is a linear classifier f(x) = (w^T)*x where w in R^d. 
+The algorithm for computing w is as follows:
+
+Init: w <-- (y_1)*(x_1)
+for i = 2...n do
+	if (y_i)*(w^T)*(x_i) < 0 then w <-- w + (y_i)*(x_i)
+	end if
+end for

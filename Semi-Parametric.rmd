@@ -1,0 +1,74 @@
+---
+title: "Semi-Parametric Regression"
+author: "A. Adriano"
+author: "A. Adriano"
+date: "Statistical Learning"
+output: html_document
+---
+<style type="text/css">
+
+h1.title {
+  font-size: 42px;
+  color: DarkRed;
+  text-align: center;
+}
+h4.author { //
+    font-size: 25px;
+  font-family: "Times New Roman", Times, serif;
+  color: DarkRed;
+  text-align: center;
+}
+h4.date { //
+  font-size: 20px;
+  font-family: "Times New Roman", Times, serif;
+  color: DarkRed;
+  text-align: center;
+}
+</style>
+****
+### Semi-Parametric Regression for a basic dataset
+</br>
+```{r}
+
+data1 <- read.csv("paramcode.csv")
+
+n=10;n.plot=100
+
+x = data1$x
+
+y = data1$y
+
+x.plot=seq(from=min(x),to=max(x),length.out=n.plot)
+
+y.plot=seq(from=min(y),to=max(y),length.out=n.plot)
+
+plot(x.plot,y.plot,col=1,type='l',lty=2)
+
+points(x,y,pch=16)
+
+
+## compute the classifier 
+
+lambda=0.01
+
+theta=1
+
+I=diag(rep(1,n))
+
+kk=outer(1:n,1:n,Vectorize(function(i,j) k(x[i],x[j])))
+
+alpha = solve(kk + lambda*diag(rep(1,n)))%*%(y-x*theta)
+
+
+## evaluate the classifier 
+
+k.x=outer(1:n,1:n.plot,Vectorize(function(i,j) k(x[i],x.plot[j])))
+
+hat.y=t(k.x)%*%alpha +x.plot*theta
+
+lines(x.plot,hat.y,col=2)
+
+legend("bottomleft",legend=c("simple linear", "estimated"),
+
+       col=c(1,2),lty=c(2,1))  
+```

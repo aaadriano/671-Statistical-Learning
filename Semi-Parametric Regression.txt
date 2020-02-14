@@ -1,0 +1,2 @@
+We write a code that demonstrates in one dimension the semi-parametric regression. Use the data in the
+fille "paramcode.csv".

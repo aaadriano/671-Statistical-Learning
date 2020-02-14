@@ -1,7 +1,6 @@
 ---
 title: "Semi-Parametric Regression"
 author: "A. Adriano"
-author: "A. Adriano"
 date: "Statistical Learning"
 output: html_document
 ---

@@ -1,0 +1,231 @@
+---
+title: "KRR for 2D Data"
+author: "A. Adriano"
+date: "Statistical Learning"
+output: html_document
+---
+<style type="text/css">
+
+h1.title {
+  font-size: 42px;
+  color: DarkRed;
+  text-align: center;
+}
+h4.author { //
+    font-size: 25px;
+  font-family: "Times New Roman", Times, serif;
+  color: DarkRed;
+  text-align: center;
+}
+h4.date { //
+  font-size: 20px;
+  font-family: "Times New Roman", Times, serif;
+  color: DarkRed;
+  text-align: center;
+}
+</style>
+****
+### Kernel Ridge Regression for 2D Data
+</br>
+
+```{r}
+# kernel regression
+rm(list=ls())
+#set.seed(0.1)
+##############################
+## A few kernel functions
+##############################
+k1 = function(x,y)
+return(sum(x*y))
+k12 = function(x,y)
+return(sum(x*y)+1)
+k2 = function(x,y)
+return(sum(x*y)^2)
+k3 = function(x,y)
+return((1+sum(x*y))^2)
+d=4
+k4 = function(x,y)
+return((1+sum(x*y))^d)
+sigma=1
+kGauss = function(x,y)
+return(exp(-sum((x-y)^2)/(2)))
+kappa=1
+theta=1
+k6 = function(x,y)
+return(tanh(kappa*sum(x*y)+theta))
+k = function(x,y)
+return(k4(x,y))
+##2d data
+n.p=10
+n.m=10
+n=n.p+n.m
+library(mvtnorm)
+x.p=rmvnorm(n=n.p,mean=c(1,1)+c(2,2),sigma=diag(rep(1,2)))
+x.m=rmvnorm(n=n.m,mean=c(-1,-1)+c(2,2),sigma=diag(rep(2,2)))
+x=rbind(x.p,x.m)
+y<-ifelse(x[,1]<=x[,2],1,-1)
+##################################
+## compute the classifier ########
+##################################
+lambda=0.1
+N = nrow(x)
+ident.N = diag(rep(1,N))
+KK <- matrix(rep(0,N^2),N,N)
+KK=outer(1:n,1:n,Vectorize(function(i,j) k(x[i,],x[j,])))
+alpha = solve(KK + lambda*N*diag(rep(1,N)))%*%y
+f=t(KK)%*%alpha
+##################################
+## evaluate the classifier #######
+## over a grid #######
+##################################
+x.min=min(x)
+x.max=max(x)
+y.hat=matrix(NA,nrow=50,ncol=50)
+g=seq(from=x.min,to=x.max,length.out=50)
+g.n = 50
+for (i in (1:g.n)){
+for (j in (1:g.n)){
+u=c(g[i],g[j])
+k.x=outer(1:n,1,Vectorize(function(i,j) k(x[i,],u)))
+y.hat[i,j]=sum(k.x*alpha)
+}
+}
+contour(x=g,y=g,z=y.hat,asp=1)
+points(x.p,col=4,pch=16)
+points(x.m,col=2,pch=16)
+```
+
+```{r}
+# kernel regression
+rm(list=ls())
+#set.seed(0.1)
+##############################
+## A few kernel functions
+##############################
+k1 = function(x,y)
+return(sum(x*y))
+k12 = function(x,y)
+return(sum(x*y)+1)
+k2 = function(x,y)
+return(sum(x*y)^2)
+k3 = function(x,y)
+return((1+sum(x*y))^2)
+d=4
+k4 = function(x,y)
+return((1+sum(x*y))^d)
+sigma=1
+kGauss = function(x,y)
+return(exp(-sum((x-y)^2)/(2)))
+kappa=1
+theta=1
+k6 = function(x,y)
+return(tanh(kappa*sum(x*y)+theta))
+k = function(x,y)
+return(k3(x,y))
+##2d data
+n.p=10
+n.m=10
+n=n.p+n.m
+library(mvtnorm)
+x.p=rmvnorm(n=n.p,mean=c(1,1)+c(2,2),sigma=diag(rep(1,2)))
+x.m=rmvnorm(n=n.m,mean=c(-1,-1)+c(2,2),sigma=diag(rep(2,2)))
+x=rbind(x.p,x.m)
+y<-ifelse(x[,1]<=x[,2],1,-1)
+##################################
+## compute the classifier ########
+##################################
+lambda=0.1
+N = nrow(x)
+ident.N = diag(rep(1,N))
+KK <- matrix(rep(0,N^2),N,N)
+KK=outer(1:n,1:n,Vectorize(function(i,j) k(x[i,],x[j,])))
+alpha = solve(KK + lambda*N*diag(rep(1,N)))%*%y
+f=t(KK)%*%alpha
+##################################
+## evaluate the classifier #######
+## over a grid #######
+##################################
+x.min=min(x)
+x.max=max(x)
+y.hat=matrix(NA,nrow=50,ncol=50)
+g=seq(from=x.min,to=x.max,length.out=50)
+g.n = 50
+for (i in (1:g.n)){
+for (j in (1:g.n)){
+u=c(g[i],g[j])
+k.x=outer(1:n,1,Vectorize(function(i,j) k(x[i,],u)))
+y.hat[i,j]=sum(k.x*alpha)
+}
+}
+contour(x=g,y=g,z=y.hat,asp=1)
+points(x.p,col=4,pch=16)
+points(x.m,col=2,pch=16)
+```
+
+```{r}
+# kernel regression
+rm(list=ls())
+#set.seed(0.1)
+##############################
+## A few kernel functions
+##############################
+k1 = function(x,y)
+return(sum(x*y))
+k12 = function(x,y)
+return(sum(x*y)+1)
+k2 = function(x,y)
+return(sum(x*y)^2)
+k3 = function(x,y)
+return((1+sum(x*y))^2)
+d=4
+k4 = function(x,y)
+return((1+sum(x*y))^d)
+sigma=1
+kGauss = function(x,y)
+return(exp(-sum((x-y)^2)/(2)))
+kappa=1
+theta=1
+k6 = function(x,y)
+return(tanh(kappa*sum(x*y)+theta))
+k = function(x,y)
+return(k2(x,y))
+##2d data
+n.p=10
+n.m=10
+n=n.p+n.m
+library(mvtnorm)
+x.p=rmvnorm(n=n.p,mean=c(1,1)+c(2,2),sigma=diag(rep(1,2)))
+x.m=rmvnorm(n=n.m,mean=c(-1,-1)+c(2,2),sigma=diag(rep(2,2)))
+x=rbind(x.p,x.m)
+y<-ifelse(x[,1]<=x[,2],1,-1)
+##################################
+## compute the classifier ########
+##################################
+lambda=0.1
+N = nrow(x)
+ident.N = diag(rep(1,N))
+KK <- matrix(rep(0,N^2),N,N)
+KK=outer(1:n,1:n,Vectorize(function(i,j) k(x[i,],x[j,])))
+alpha = solve(KK + lambda*N*diag(rep(1,N)))%*%y
+f=t(KK)%*%alpha
+##################################
+## evaluate the classifier #######
+## over a grid #######
+##################################
+x.min=min(x)
+x.max=max(x)
+y.hat=matrix(NA,nrow=50,ncol=50)
+g=seq(from=x.min,to=x.max,length.out=50)
+g.n = 50
+for (i in (1:g.n)){
+for (j in (1:g.n)){
+u=c(g[i],g[j])
+k.x=outer(1:n,1,Vectorize(function(i,j) k(x[i,],u)))
+y.hat[i,j]=sum(k.x*alpha)
+}
+}
+contour(x=g,y=g,z=y.hat,asp=1)
+points(x.p,col=4,pch=16)
+points(x.m,col=2,pch=16)
+```
+

@@ -1,0 +1,2 @@
+We code the kernalized ridge regression for the 2D data. 
+We show 3 examples of results obtained with simulated data in 2 dimensions, using 3 different kernels.
